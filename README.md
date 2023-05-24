@@ -237,7 +237,7 @@ Boxplot of ride length by user type:
         plot.title = element_text(size = 14, face = "bold")
       )
 
-![](Notebook_files/figure-markdown_strict/unnamed-chunk-15-1.png)
+![Ride Length (hours) plot](Notebook_files/figure-markdown_strict/unnamed-chunk-15-1.png)
 
 The data presents an interesting distinction in ride durations between
 casual and member users. Casual users, on average, tend to enjoy longer
