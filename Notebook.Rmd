@@ -1,0 +1,346 @@
+---
+title: "Divvy Case Study Full Year Analysis"
+author: "MOHAMED M."
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+program: This project is a capstone for the Google Data Analyst Certificate program
+  I finished in MAy 2023.
+---
+**Data Collection and Preparation:** The script starts by loading the necessary packages, such as tidyverse, lubridate, and ggplot2. The data for Divvy bike sharing is loaded for each month over a one-year period, from May 2022 to April 2023, and stored into separate dataframes. This data is then checked for consistency in column names, and columns are renamed to ensure uniformity across all dataframes.
+
+**Data Wrangling:** In the data wrangling phase, all the monthly dataframes are combined into a single dataframe called all_trips. Then, the latitude and longitude fields are removed as they are not needed for this analysis. A set of new columns are added which include the date, month, day, year, day of the week, and ride length for each ride.
+
+**Data Cleaning:** The data is further cleaned by converting the ride length from a factor to a numeric field, allowing for numerical calculations. The script also removes "bad" data, such as entries where the ride length is negative.
+
+**Descriptive Analysis:** The script conducts descriptive analysis on the ride_length column, providing a summary of the data and comparing members and casual users. It aggregates ride lengths by user type and day of the week to calculate average ride times. The script also groups the data by user type and weekday, calculating the number of rides and average duration.
+
+**Data Visualization:** The script uses ggplot2 to create bar charts showing the number of rides and average ride duration by rider type and weekday.
+
+*The primary goal of this script is to understand how members and casual riders use Divvy bikes differently. The script achieves this by cleaning and wrangling the data into a format that allows for this comparison, and then visualizing the results*.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Install required packages}
+required_packages <- c("lubridate", "tidyverse", "ggplot2", "hms", "flexdashboard", "purrr", "readr")
+for (package in required_packages) {
+  if (!require(package, character.only = TRUE)) {
+    install.packages(package)
+    library(package, character.only = TRUE)
+  }
+}
+```
+
+Get a list of file names in the "data" directory. Read and combine all CSV files into a single dataframe
+```{r Data for the previous 12 months}
+file_list <- list.files("data/", pattern = "\\.csv$", full.names = TRUE)
+all_trips <- bind_rows(lapply(file_list, read_csv))
+```
+
+### Data Wrangling:
+```{r}
+colnames(all_trips)
+```
+Rename columns for better readability. Add columns for dates and time
+```{r}
+all_trips <- all_trips %>%
+  rename(
+    trip_id = ride_id,
+    bikeid = rideable_type,
+    start_time = started_at,
+    end_time = ended_at,
+    from_station_name = start_station_name,
+    from_station_id = start_station_id,
+    to_station_name = end_station_name,
+    to_station_id = end_station_id,
+    start_lat = start_lat,
+    start_lng = start_lng,
+    end_lat = end_lat,
+    end_lng = end_lng,
+    usertype = member_casual
+  ) %>%
+  mutate(
+    date = as.Date(start_time),
+    month = month(date),
+    day = day(date),
+    year = year(date),
+    day_of_week = weekdays(date)
+  )
+
+```
+### Data Cleaning:
+The data is further cleaned by adding and converting the ride length from a factor to a numeric field, allowing for numerical calculations. The script also removes "bad" data, such as entries where the ride length is negative.
+
+Removing unused columns
+```{r}
+all_trips <- all_trips %>%  
+  select(-c(start_lat, start_lng, end_lat, end_lng))
+```
+Converting the ride length from a factor to a numeric field
+```{r}
+all_trips$start_time <- ymd_hms(all_trips$start_time)
+all_trips$end_time <- ymd_hms(all_trips$end_time)
+```
+Inspect the new table that has been created
+```{r}
+colnames(all_trips)  #List of column names
+```
+
+```{r}
+nrow(all_trips)  #How many rows are in data frame?
+```
+
+```{r}
+dim(all_trips)  #Dimensions of the data frame?
+```
+```{r}
+head(all_trips)  #See the first 6 rows of data frame.
+```
+
+```{r}
+summary(all_trips)  #Statistical summary of data. Mainly for numerics
+```
+
+
+Adding the ride length column
+```{r}
+all_trips$ride_length <- difftime(all_trips$end_time,all_trips$start_time)
+```
+Convert "ride_length" from Factor to numeric so we can run calculations on the data
+```{r}
+is.factor(all_trips$ride_length)
+all_trips$ride_length <- as.numeric(as.character(all_trips$ride_length))
+is.numeric(all_trips$ride_length)
+
+```
+Removing negative ride_length values, creating a new version of the dataframe (v2) since data is being removed
+```{r}
+all_trips_v2 <- all_trips[!(all_trips$ride_length < 0),]
+```
+
+
+This script first removes rides that are either shorter than 1 minute or longer than 24 hours. Such durations are likely due to users forgetting to end their trips.
+```{r}
+all_trips_v2 <- all_trips_v2 %>%
+  filter(ride_length >= 1 & ride_length <= 60 * 24)
+```
+Afterwards, the script converts the ride length from minutes to hours. The result is rounded to two decimal places.
+```{r}
+all_trips_v2$ride_length <- round(all_trips_v2$ride_length / 60, 2)
+```
+
+### Descriptive Analysis and Data Visualization:: 
+Ride Length Analysis
+```{r Summary statistics of ride length}
+
+summary(all_trips_v2$ride_length)
+```
+Boxplot of ride length by user type:
+```{r}
+ggplot(all_trips_v2, aes(x = usertype, y = ride_length, fill = usertype)) +
+  geom_boxplot() +
+  labs(
+    x = "User Type",
+    y = "Ride Length (hours)",  
+    title = "Ride Length by User Type"
+  ) +
+  scale_fill_manual(values = c("lightblue", "lightgreen")) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold")
+  )
+
+```
+The data presents an interesting distinction in ride durations between casual and member users. Casual users, on average, tend to enjoy longer rides, typically around 10 hours. They show a wide variance, with some rides extending from slightly over 5 hours to just below 15 hours. Conversely, member users generally prefer shorter rides. The following plot shows the average hourly usage in more details
+```{r}
+# Calculate the average ride length by user type
+avg_ride_length <- all_trips_v2 %>%
+  group_by(usertype) %>%
+  summarise(avg_ride_length = mean(ride_length, na.rm = TRUE))
+
+# Create a bar plot with custom color palette
+ggplot(avg_ride_length, aes(x = usertype, y = avg_ride_length, fill = usertype)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  labs(
+    x = "User Type",
+    y = "Average Ride Length (hours)",
+    title = "Average Ride Length by User Type"
+  ) +
+  scale_fill_manual(values = c("#FF8C00", "#4C79A6")) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold")
+  )
+```
+
+
+
+
+Determine the day and hour that reflect the highest usage in the Divvy bike data, you can analyze the data based on the number of rides by day of the week and hour of the day.
+```{r}
+# Calculate the number of rides by day of the week and hour of the day
+usage_by_day_hour <- all_trips_v2 %>%
+  group_by(day_of_week, hour = hour(start_time)) %>%
+  summarise(ride_count = n(), .groups = "drop") %>%
+  arrange(day_of_week, hour)
+
+# Find the day and hour with the highest usage
+max_usage <- usage_by_day_hour %>%
+  filter(ride_count == max(ride_count))
+
+# Plot the number of rides by day of the week and hour of the day
+ggplot(usage_by_day_hour, aes(x = hour, y = ride_count, group = day_of_week, color = day_of_week)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 3, shape = 21, fill = "white") +
+  scale_color_brewer(palette = "Set1") +
+  labs(
+    x = "Hour of the Day",
+    y = "Ride Count",
+    title = "Divvy Bike Usage by Day and Hour"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold")
+  )
+#cat("Day with the highest usage:", max_usage$day_of_week, "\n")
+#cat("Hour with the highest usage:", max_usage$hour, "\n")
+# Day with the highest usage: Wednesday 
+# Hour with the highest usage: 5  pm
+```
+This plot provides an overview of the bike usage patterns throughout the week, segmented by the hour of the day. The lines for each day represent the number of rides taken during each hour, allowing us to observe the peaks and troughs of usage.
+
+The data suggests that bike usage patterns change significantly depending on the day of the week and the hour of the day. Some hours show consistently high bike usage across all days of the week, while others show variable usage.
+
+Interestingly, the day with the highest overall usage is Wednesday, and the hour with the most rides is 5 pm. This might indicate that a significant number of users are using the service for commuting purposes, as this hour typically aligns with the end of a standard workday.
+
+However, it would be beneficial to look at the data more granularly to understand if this pattern holds across all days, or if there are specific days where the usage at 5 pm is particularly high. This information could be used to manage the bike fleet more effectively and ensure high availability during peak usage times.
+
+
+
+
+
+```{r ride_count_by_month_user}
+library(scales)
+# Define a vector of month names
+month_names <- c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+
+ride_count_by_month_user <- all_trips_v2 %>%
+  drop_na(month, usertype) %>%
+  group_by(month, usertype) %>%
+  summarise(ride_count = n(), .groups = "drop")
+
+# Convert month from numeric to factor with specified levels and labels
+ride_count_by_month_user$month <- factor(ride_count_by_month_user$month, levels = 1:12, labels = month_names)
+# Convert ride count to thousands
+ride_count_by_month_user$ride_count <- ride_count_by_month_user$ride_count / 1000
+
+ggplot(ride_count_by_month_user, aes(x = month, y = ride_count, fill = usertype)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    x = "Month",
+    y = "Ride Count",
+    fill = "User Type",
+    title = "Monthly Ride Count by User Type (in 'k')"
+  ) + 
+  scale_y_continuous(labels = function(x) paste(x, "k"))+
+  theme_minimal() +
+  theme(
+    legend.position = "top",
+    legend.title = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold")
+  )
+ 
+```
+
+
+The bar chart presents the ride count per month, divided by user type, for both casual and member riders. The ride count is plotted on the y-axis, while the x-axis represents each month of the year. This data visualization allows us to examine and compare the monthly ride patterns between the two types of users.
+
+We observed that member rides outnumber casual rides every month. This suggests that members use the service more consistently throughout the year. For both user types, ride counts tend to increase from January to July, peak in the summer months (June, July, and August), and then gradually decrease towards the end of the year.
+Ride Length Analysis
+
+
+
+
+Calculate the ride count by date
+```{r}
+# Calculate the ride count by month and year
+ride_count_by_month_year <- all_trips_v2 %>%
+  drop_na(date) %>%
+  mutate(year_month = format(date, "%Y-%m")) %>%
+  group_by(year_month) %>%
+  summarise(ride_count = n()) %>%
+  ungroup()
+
+# Convert ride count to thousands
+ride_count_by_month_year$ride_count <- ride_count_by_month_year$ride_count / 1000
+
+# Find the highest and lowest ride count
+max_ride_count <- max(ride_count_by_month_year$ride_count)
+min_ride_count <- min(ride_count_by_month_year$ride_count)
+
+# Find the month/year with the highest and lowest ride count
+highest_month_year <- ride_count_by_month_year %>%
+  filter(ride_count == max_ride_count) %>%
+  pull(year_month)
+lowest_month_year <- ride_count_by_month_year %>%
+  filter(ride_count == min_ride_count) %>%
+  pull(year_month)
+
+# Print the highest and lowest ride month/year
+cat("Highest bike ride month/year: ", highest_month_year, "\n")
+cat("Lowest bike ride month/year: ", lowest_month_year, "\n")
+
+# Create a line plot with smoothed line and filled points
+ggplot(data = ride_count_by_month_year, aes(x = year_month, y = ride_count, group = 1)) +
+  
+  geom_point(aes(fill = year_month), size = 3, shape = 21, color = "black") +
+  labs(
+    x = NULL,
+    y = "Ride Count (in thousands)",
+    title = "Divvy Bike Ride Monthly Count Over Time"
+  ) +
+  geom_line(color = "blue", size = 1.5, alpha = 0.7) +
+  scale_y_continuous(labels = function(x) paste(x, "k")) +
+  scale_fill_manual(values = rainbow(length(unique(ride_count_by_month_year$year_month)))) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    plot.title = element_text(size = 14, face = "bold")
+  )
+
+```
+
+The data indicates that in May 2022, there were approximately 502,000 rides, while in July 2022, the count rose to about 657,000 rides, which was the highest throughout the observed period. On the contrary, the lowest number of rides was in December 2022 with approximately 169,000 rides.
+
+The data points in the plot are filled with different colors for each month, and the points are connected by a blue line to show the trend of ride count over time. The highest point on the plot corresponds to July 2022, which was the month with the highest ride count, while the lowest point corresponds to December 2022, the month with the lowest ride count.
+
+From this visualization, one can infer the fluctuations in bike ride counts over the year. For example, the count tends to peak in summer (July) and drop in winter (December). These trends can be useful for understanding the seasonality of bike usage and planning accordingly.
+
+```{r Saving the cleaned data}
+
+# write.csv(all_trips_v2, file = '~/github.io/data/cleaned_data.csv')
+
+
+```
+
