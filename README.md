@@ -36,153 +36,80 @@ The script employs `ggplot2` to design bar charts representing the number of rid
 
 The main objective of this script is to delineate how members and casual riders utilize Divvy bikes differently. This is accomplished by cleaning and wrangling the data into a format conducive to this comparison, followed by visualizing the results.
 
+## Required Packages <a name="required-packages"></a>
 
+```r
+required_packages <- c("lubridate", "tidyverse", "ggplot2", "hms", "flexdashboard", "purrr", "readr")
+for (package in required_packages) {
+  if (!require(package, character.only = TRUE)) {
+    install.packages(package)
+    library(package, character.only = TRUE)
+  }
+}
+```
+Data Import and Consolidation <a name="data-import-and-consolidation"></a>
+A list of file names in the “data” directory is generated. All CSV files are read and combined into a single dataframe.
+```r
+file_list <- list.files("data/", pattern = "\\.csv$", full.names = TRUE)
+all_trips <- bind_rows(lapply(file_list, read_csv))
+```
+Data Wrangling <a name="data-wrangling"></a>
+Columns are renamed for better readability, and new columns for dates and times are added.
+```r
+all_trips <- all_trips %>%
+  rename(
+    trip_id = ride_id,
+    bikeid = rideable_type,
+    start_time = started_at,
+    end_time = ended_at,
+    from_station_name = start_station_name,
+    from_station_id = start_station_id,
+    to_station_name = end_station_name,
+    to_station_id = end_station_id,
+    start_lat = start_lat,
+    start_lng = start_lng,
+    end_lat = end_lat,
+    end_lng = end_lng,
+    usertype = member_casual
+  ) %>%
+  mutate(
+    date = as.Date(start_time),
+    month = month(date),
+    day = day(date),
+    year = year(date),
+    day_of_week = weekdays(date)
+  )
+```
 
+   ## Data Cleaning <a name="data-cleaning"></a>
 
+The script drops unnecessary columns (latitude and longitude fields) and converts the start time and end time from factors to numeric fields.
 
-    required_packages <- c("lubridate", "tidyverse", "ggplot2", "hms", "flexdashboard", "purrr", "readr")
-    for (package in required_packages) {
-      if (!require(package, character.only = TRUE)) {
-        install.packages(package)
-        library(package, character.only = TRUE)
-      }
-    }
+```R
+all_trips <- all_trips %>%  
+  select(-c(start_lat, start_lng, end_lat, end_lng))
 
+all_trips$start_time <- ymd_hms(all_trips$start_time)
+all_trips$end_time <- ymd_hms(all_trips$end_time)
+```
+Data Inspection <a name="data-inspection"></a>
+The new table is inspected to understand the structure, variables, and initial statistics.
 
-    ## Loading required package: flexdashboard
+# List of column names
+colnames(all_trips)
 
-Get a list of file names in the “data” directory. Read and combine all
-CSV files into a single dataframe
+# Number of rows in data frame
+nrow(all_trips)
 
-    file_list <- list.files("data/", pattern = "\\.csv$", full.names = TRUE)
-    all_trips <- bind_rows(lapply(file_list, read_csv))
+# Dimensions of the data frame
+dim(all_trips)
 
-    ## Rows: 634858 Columns: 13
-   ### Data Wrangling:
+# Display the first 6 rows of data frame
+head(all_trips)
 
-    colnames(all_trips)
+# Statistical summary of data (mainly for numerical variables)
+summary(all_trips)
 
-    ##  [1] "ride_id"            "rideable_type"      "started_at"        
-    ##  [4] "ended_at"           "start_station_name" "start_station_id"  
-    ##  [7] "end_station_name"   "end_station_id"     "start_lat"         
-    ## [10] "start_lng"          "end_lat"            "end_lng"           
-    ## [13] "member_casual"
-
-Rename columns for better readability. Add columns for dates and time
-
-    all_trips <- all_trips %>%
-      rename(
-        trip_id = ride_id,
-        bikeid = rideable_type,
-        start_time = started_at,
-        end_time = ended_at,
-        from_station_name = start_station_name,
-        from_station_id = start_station_id,
-        to_station_name = end_station_name,
-        to_station_id = end_station_id,
-        start_lat = start_lat,
-        start_lng = start_lng,
-        end_lat = end_lat,
-        end_lng = end_lng,
-        usertype = member_casual
-      ) %>%
-      mutate(
-        date = as.Date(start_time),
-        month = month(date),
-        day = day(date),
-        year = year(date),
-        day_of_week = weekdays(date)
-      )
-
-### Data Cleaning:
-
-The data is further cleaned by adding and converting the ride length
-from a factor to a numeric field, allowing for numerical calculations.
-The script also removes “bad” data, such as entries where the ride
-length is negative.
-
-Removing unused columns
-
-    all_trips <- all_trips %>%  
-      select(-c(start_lat, start_lng, end_lat, end_lng))
-
-Converting the ride length from a factor to a numeric field
-
-    all_trips$start_time <- ymd_hms(all_trips$start_time)
-
-    ## Warning: 31 failed to parse.
-
-    all_trips$end_time <- ymd_hms(all_trips$end_time)
-
-    ## Warning: 23 failed to parse.
-
-Inspect the new table that has been created
-
-    colnames(all_trips)  #List of column names
-
-    ##  [1] "trip_id"           "bikeid"            "start_time"       
-    ##  [4] "end_time"          "from_station_name" "from_station_id"  
-    ##  [7] "to_station_name"   "to_station_id"     "usertype"         
-    ## [10] "date"              "month"             "day"              
-    ## [13] "year"              "day_of_week"
-
-    nrow(all_trips)  #How many rows are in data frame?
-
-    ## [1] 5859061
-
-    dim(all_trips)  #Dimensions of the data frame?
-
-    ## [1] 5859061      14
-
-    head(all_trips)  #See the first 6 rows of data frame.
-
-    ## # A tibble: 6 × 14
-    ##   trip_id       bikeid start_time          end_time            from_station_name
-    ##   <chr>         <chr>  <dttm>              <dttm>              <chr>            
-    ## 1 EC2DE40644C6… class… 2022-05-23 23:06:58 2022-05-23 23:40:19 Wabash Ave & Gra…
-    ## 2 1C31AD03897E… class… 2022-05-11 08:53:28 2022-05-11 09:31:22 DuSable Lake Sho…
-    ## 3 1542FBEC8304… class… 2022-05-26 18:36:28 2022-05-26 18:58:18 Clinton St & Mad…
-    ## 4 6FF598529245… class… 2022-05-10 07:30:07 2022-05-10 07:38:49 Clinton St & Mad…
-    ## 5 483C52CAAE12… class… 2022-05-10 17:31:56 2022-05-10 17:36:57 Clinton St & Mad…
-    ## 6 C0A3AA5A614D… class… 2022-05-04 14:48:55 2022-05-04 14:56:04 Carpenter St & H…
-    ## # ℹ 9 more variables: from_station_id <chr>, to_station_name <chr>,
-    ## #   to_station_id <chr>, usertype <chr>, date <date>, month <dbl>, day <int>,
-    ## #   year <dbl>, day_of_week <chr>
-
-    summary(all_trips)  #Statistical summary of data. Mainly for numerics
-
-    ##    trip_id             bikeid            start_time                    
-    ##  Length:5859061     Length:5859061     Min.   :2022-05-01 00:00:06.00  
-    ##  Class :character   Class :character   1st Qu.:2022-07-03 11:12:29.25  
-    ##  Mode  :character   Mode  :character   Median :2022-08-28 12:44:56.50  
-    ##                                        Mean   :2022-09-19 13:39:54.05  
-    ##                                        3rd Qu.:2022-11-08 06:30:15.00  
-    ##                                        Max.   :2023-04-30 23:59:05.00  
-    ##                                        NA's   :31                      
-    ##     end_time                      from_station_name  from_station_id   
-    ##  Min.   :2022-05-01 00:05:17.00   Length:5859061     Length:5859061    
-    ##  1st Qu.:2022-07-03 11:38:52.00   Class :character   Class :character  
-    ##  Median :2022-08-28 13:07:18.00   Mode  :character   Mode  :character  
-    ##  Mean   :2022-09-19 13:59:04.64                                        
-    ##  3rd Qu.:2022-11-08 06:44:06.25                                        
-    ##  Max.   :2023-05-03 10:37:12.00                                        
-    ##  NA's   :23                                                            
-    ##  to_station_name    to_station_id        usertype              date           
-    ##  Length:5859061     Length:5859061     Length:5859061     Min.   :2022-05-01  
-    ##  Class :character   Class :character   Class :character   1st Qu.:2022-07-03  
-    ##  Mode  :character   Mode  :character   Mode  :character   Median :2022-08-28  
-    ##                                                           Mean   :2022-09-18  
-    ##                                                           3rd Qu.:2022-11-08  
-    ##                                                           Max.   :2023-04-30  
-    ##                                                                               
-    ##      month             day             year      day_of_week       
-    ##  Min.   : 1.000   Min.   : 1.00   Min.   :2022   Length:5859061    
-    ##  1st Qu.: 5.000   1st Qu.: 8.00   1st Qu.:2022   Class :character  
-    ##  Median : 7.000   Median :15.00   Median :2022   Mode  :character  
-    ##  Mean   : 6.945   Mean   :15.67   Mean   :2022                     
-    ##  3rd Qu.: 9.000   3rd Qu.:23.00   3rd Qu.:2022                     
-    ##  Max.   :12.000   Max.   :31.00   Max.   :2023                     
-    ## 
 
 Adding the ride length column
 
