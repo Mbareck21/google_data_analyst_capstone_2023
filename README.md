@@ -1,26 +1,42 @@
-# Capstone Project README
+# Google Analytics Capstone Project
+![Google Analytics Logo](https://www.google.com/analytics/images/analytics-logo.svg)
 
-## Overview
-This README provides an introduction to the Capstone Project for the Google Analytics Certification Training completed in May 2023. The project focuses on analyzing Divvy bike sharing data using SQL, Excel, and R. The goal of the project is to understand the differences in bike usage patterns between members and casual riders.
+Welcome to my capstone project for the Google Analytics Certification training I completed in May 2023. Over the course of three months, I honed my skills in SQL, Excel, and R. Ultimately, I chose R for this project due to its excellent capabilities for data analysis and visualization.
 
-## Data Collection and Preparation
-The script begins by loading the necessary packages, including `tidyverse`, `lubridate`, and `ggplot2`. The [Divvy bike sharing data](https://divvy-tripdata.s3.amazonaws.com/index.html) for each month from May 2022 to April 2023 is loaded and stored into separate dataframes. To ensure consistency, the data is checked for column name consistency, and any inconsistencies are addressed by renaming the columns.
+## Table of Contents
 
-## Data Wrangling
-In the data wrangling phase, all the monthly dataframes are combined into a single dataframe called `all_trips`. The latitude and longitude fields, which are not required for this analysis, are removed. Additional columns are created, including the date, month, day, year, day of the week, and ride length for each ride.
+1. [Data Collection and Preparation](#data-collection-and-preparation)
+2. [Data Wrangling](#data-wrangling)
+3. [Data Cleaning](#data-cleaning)
+4. [Descriptive Analysis](#descriptive-analysis)
+5. [Data Visualization](#data-visualization)
+6. [Conclusions](#conclusions)
 
-## Data Cleaning
-The data is further cleaned by converting the ride length from a factor to a numeric field, enabling numerical calculations. The script also eliminates "bad" data, such as entries with negative ride lengths.
+## Data Collection and Preparation <a name="data-collection-and-preparation"></a>
 
-## Descriptive Analysis
-The script performs descriptive analysis on the `ride_length` column, providing a summary of the data and comparing member and casual users. Ride lengths are aggregated by user type and day of the week to calculate average ride times. Additionally, the script groups the data by user type and weekday, calculating the number of rides and average duration.
+The script begins by importing the necessary packages, including `tidyverse`, `lubridate`, and `ggplot2`. We load data from [Divvy bike sharing](https://divvy-tripdata.s3.amazonaws.com/index.html) for each month from May 2022 to April 2023 into separate dataframes. The data is then validated for consistency in column names and appropriately renamed to ensure uniformity across all dataframes.
 
-## Data Visualization
-To visualize the findings, the script utilizes `ggplot2` to create bar charts that display the number of rides and average ride duration by rider type and weekday.
+## Data Wrangling <a name="data-wrangling"></a>
 
----
+During the data wrangling phase, all the monthly dataframes are amalgamated into a single dataframe named `all_trips`. Latitude and longitude fields are discarded as they are not essential for this analysis. New columns are added which encompass the date, month, day, year, day of the week, and ride length for each ride.
 
-The primary objective of this Capstone Project is to analyze the usage patterns of Divvy bikes among members and casual riders. The script accomplishes this by collecting and preparing the data, performing data wrangling and cleaning, conducting descriptive analysis, and visualizing the results.
+## Data Cleaning <a name="data-cleaning"></a>
+
+The data is further polished by converting the ride length from a factor to a numeric field, thereby facilitating numerical computations. The script also expunges “bad” data, such as records where the ride length is negative.
+
+## Descriptive Analysis <a name="descriptive-analysis"></a>
+
+The script executes descriptive analysis on the `ride_length` column, summarizing the data and comparing members and casual users. It aggregates ride lengths by user type and day of the week to compute average ride durations. Furthermore, it groups the data by user type and weekday, evaluating the number of rides and average duration.
+
+## Data Visualization <a name="data-visualization"></a>
+
+The script employs `ggplot2` to design bar charts representing the number of rides and average ride duration by rider type and weekday.
+
+## Conclusions <a name="conclusions"></a>
+
+The main objective of this script is to delineate how members and casual riders utilize Divvy bikes differently. This is accomplished by cleaning and wrangling the data into a format conducive to this comparison, followed by visualizing the results.
+
+
 
 
 
