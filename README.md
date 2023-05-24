@@ -41,37 +41,7 @@ and then visualizing the results*.
       }
     }
 
-    ## Loading required package: lubridate
 
-    ## 
-    ## Attaching package: 'lubridate'
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     date, intersect, setdiff, union
-
-    ## Loading required package: tidyverse
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr   1.1.2     ✔ readr   2.1.4
-    ## ✔ forcats 1.0.0     ✔ stringr 1.5.0
-    ## ✔ ggplot2 3.4.2     ✔ tibble  3.2.1
-    ## ✔ purrr   1.0.1     ✔ tidyr   1.3.0
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-    ## Loading required package: hms
-    ## 
-    ## 
-    ## Attaching package: 'hms'
-    ## 
-    ## 
-    ## The following object is masked from 'package:lubridate':
-    ## 
-    ##     hms
-    ## 
-    ## 
     ## Loading required package: flexdashboard
 
 Get a list of file names in the “data” directory. Read and combine all
@@ -81,115 +51,7 @@ CSV files into a single dataframe
     all_trips <- bind_rows(lapply(file_list, read_csv))
 
     ## Rows: 634858 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 769204 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 823488 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 785932 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 701339 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 558685 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 337735 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 181806 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 190301 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 190445 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 258678 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## Rows: 426590 Columns: 13
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr  (7): ride_id, rideable_type, start_station_name, start_station_id, end_...
-    ## dbl  (4): start_lat, start_lng, end_lat, end_lng
-    ## dttm (2): started_at, ended_at
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-### Data Wrangling:
+   ### Data Wrangling:
 
     colnames(all_trips)
 
