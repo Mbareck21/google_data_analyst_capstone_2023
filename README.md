@@ -1,37 +1,28 @@
-**Data Collection and Preparation:** The script starts by loading the
-necessary packages, such as tidyverse, lubridate, and ggplot2. The data
-<https://divvy-tripdata.s3.amazonaws.com/index.html> for Divvy bike
-sharing is loaded for each month over a one-year period, from May 2022
-to April 2023, and stored into separate dataframes. This data is then
-checked for consistency in column names, and columns are renamed to
-ensure uniformity across all dataframes.
+# Capstone Project README
 
-**Data Wrangling:** In the data wrangling phase, all the monthly
-dataframes are combined into a single dataframe called all\_trips. Then,
-the latitude and longitude fields are removed as they are not needed for
-this analysis. A set of new columns are added which include the date,
-month, day, year, day of the week, and ride length for each ride.
+## Overview
+This README provides an introduction to the Capstone Project for the Google Analytics Certification Training completed in May 2023. The project focuses on analyzing Divvy bike sharing data using SQL, Excel, and R. The goal of the project is to understand the differences in bike usage patterns between members and casual riders.
 
-**Data Cleaning:** The data is further cleaned by converting the ride
-length from a factor to a numeric field, allowing for numerical
-calculations. The script also removes “bad” data, such as entries where
-the ride length is negative.
+## Data Collection and Preparation
+The script begins by loading the necessary packages, including `tidyverse`, `lubridate`, and `ggplot2`. The [Divvy bike sharing data](https://divvy-tripdata.s3.amazonaws.com/index.html) for each month from May 2022 to April 2023 is loaded and stored into separate dataframes. To ensure consistency, the data is checked for column name consistency, and any inconsistencies are addressed by renaming the columns.
 
-**Descriptive Analysis:** The script conducts descriptive analysis on
-the ride\_length column, providing a summary of the data and comparing
-members and casual users. It aggregates ride lengths by user type and
-day of the week to calculate average ride times. The script also groups
-the data by user type and weekday, calculating the number of rides and
-average duration.
+## Data Wrangling
+In the data wrangling phase, all the monthly dataframes are combined into a single dataframe called `all_trips`. The latitude and longitude fields, which are not required for this analysis, are removed. Additional columns are created, including the date, month, day, year, day of the week, and ride length for each ride.
 
-**Data Visualization:** The script uses ggplot2 to create bar charts
-showing the number of rides and average ride duration by rider type and
-weekday.
+## Data Cleaning
+The data is further cleaned by converting the ride length from a factor to a numeric field, enabling numerical calculations. The script also eliminates "bad" data, such as entries with negative ride lengths.
 
-*The primary goal of this script is to understand how members and casual
-riders use Divvy bikes differently. The script achieves this by cleaning
-and wrangling the data into a format that allows for this comparison,
-and then visualizing the results*.
+## Descriptive Analysis
+The script performs descriptive analysis on the `ride_length` column, providing a summary of the data and comparing member and casual users. Ride lengths are aggregated by user type and day of the week to calculate average ride times. Additionally, the script groups the data by user type and weekday, calculating the number of rides and average duration.
+
+## Data Visualization
+To visualize the findings, the script utilizes `ggplot2` to create bar charts that display the number of rides and average ride duration by rider type and weekday.
+
+---
+
+The primary objective of this Capstone Project is to analyze the usage patterns of Divvy bikes among members and casual riders. The script accomplishes this by collecting and preparing the data, performing data wrangling and cleaning, conducting descriptive analysis, and visualizing the results.
+
+
 
     required_packages <- c("lubridate", "tidyverse", "ggplot2", "hms", "flexdashboard", "purrr", "readr")
     for (package in required_packages) {
