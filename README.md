@@ -173,6 +173,7 @@ all_trips_v2$ride_length <- round(all_trips_v2$ride_length / 60, 2)
       )
 ```
 ![Ride Length (hours) plot](Notebook_files/figure-markdown_strict/unnamed-chunk-15-1.png)
+
 The data presents an interesting distinction in ride durations between
 casual and member users. Casual users, on average, tend to enjoy longer
 rides, typically around 10 hours. They show a wide variance, with some
@@ -204,6 +205,7 @@ plot shows the average hourly usage in more details
       )
 ```
 ![](Notebook_files/figure-markdown_strict/unnamed-chunk-16-1.png)
+
 Determine the day and hour that reflect the highest usage in the Divvy
 bike data, you can analyze the data based on the number of rides by day
 of the week and hour of the day.
@@ -243,6 +245,7 @@ of the week and hour of the day.
     # Hour with the highest usage: 5  pm
 ```
 ![](Notebook_files/figure-markdown_strict/unnamed-chunk-17-1.png)  
+
 
 This plot provides an overview of the bike usage patterns throughout the
 week, segmented by the hour of the day. The lines for each day represent
@@ -312,6 +315,7 @@ ensure high availability during peak usage times.
       )
  ```
 ![](Notebook_files/figure-markdown_strict/ride_count_by_month_user-1.png)
+
 The bar chart presents the ride count per month, divided by user type,
 for both casual and member riders. The ride count is plotted on the
 y-axis, while the x-axis represents each month of the year. This data
@@ -365,7 +369,7 @@ Print the highest and lowest ride month/year
 
     ## Lowest bike ride month/year:  2022-12
 ```
-A line plot with smoothed line and filled points:
+A line plot for Divvy Bike Ride Monthly Count Over Time:
 ```r
     ggplot(data = ride_count_by_month_year, aes(x = year_month, y = ride_count, group = 1)) +
       
@@ -388,6 +392,7 @@ A line plot with smoothed line and filled points:
       )
 ```
 ![](Notebook_files/figure-markdown_strict/unnamed-chunk-18-1.png)
+
 The data indicates that in May 2022, there were approximately 502,000
 rides, while in July 2022, the count rose to about 657,000 rides, which
 was the highest throughout the observed period. On the contrary, the
@@ -408,5 +413,5 @@ understanding the seasonality of bike usage and planning accordingly.
 
 Saving the cleaned dat into a CSV file:
 ```r
-# write.csv(all_trips_v2, file = '~/github.io/data/cleaned_data.csv')
+write.csv(all_trips_v2, file = '~/github.io/data/cleaned_data.csv')
 ```
