@@ -411,7 +411,7 @@ counts over the year. For example, the count tends to peak in summer
 (July) and drop in winter (December). These trends can be useful for
 understanding the seasonality of bike usage and planning accordingly.
 
-Saving the cleaned dat into a CSV file:
+Saving the cleaned data into a CSV file:
 ```r
 write.csv(all_trips_v2, file = '~/github.io/data/cleaned_data.csv')
 ```
