@@ -10,7 +10,7 @@ Welcome to my capstone project for the Google Analytics Certification training I
 3. [Data Cleaning](#data-cleaning)
 4. [Descriptive Analysis](#descriptive-analysis)
 5. [Data Visualization](#data-visualization)
-6. [Analysis](#Analysis-summary)
+6. [Analysis Summary](#Analysis-summary)
 
 ## Data Collection and Preparation <a name="data-collection-and-preparation"></a>
 
@@ -32,17 +32,21 @@ The script executes descriptive analysis on the `ride_length` column, summarizin
 
 The script employs `ggplot2` to design bar charts representing the number of rides and average ride duration by rider type and weekday.
 
-## Analysis <a name="analysis-summary"></a>
+## Analysis Summary <a name="analysis-summary"></a>
 
 My analysis revealed interesting patterns and insights about bike ride durations, daily and hourly usage, as well as monthly ride patterns for different user types.
 
-### Ride Durations: Casual users generally took longer rides, typically around 10 hours, while member users preferred shorter rides. The variance in ride durations was also greater for casual users, suggesting that their usage of the service is less predictable.
+### Ride Durations: 
+Casual users generally took longer rides, typically around 10 hours, while member users preferred shorter rides. The variance in ride durations was also greater for casual users, suggesting that their usage of the service is less predictable.
 
-### Daily and Hourly Usage: The analysis showed significant variation in bike usage patterns depending on the day of the week and the hour of the day. Wednesdays had the highest overall usage, with the busiest hour being 5 pm, hinting at a possible commuting use for the service. More granular data would provide further insights into these usage patterns and help ensure bike availability during peak usage times.
+### Daily and Hourly Usage: 
+The analysis showed significant variation in bike usage patterns depending on the day of the week and the hour of the day. Wednesdays had the highest overall usage, with the busiest hour being 5 pm, hinting at a possible commuting use for the service. More granular data would provide further insights into these usage patterns and help ensure bike availability during peak usage times.
 
-### Monthly Ride Patterns: The bar chart showed that member rides outnumbered casual rides for each month, implying that members use the service more consistently year-round. Both user types increased their usage from January to July, with usage peaking in summer (June, July, and August), and decreasing towards the end of the year.
+### Monthly Ride Patterns: 
+The bar chart showed that member rides outnumbered casual rides for each month, implying that members use the service more consistently year-round. Both user types increased their usage from January to July, with usage peaking in summer (June, July, and August), and decreasing towards the end of the year.
 
-### Ride Length Analysis: The data pointed to the highest number of rides in July 2022 (approx. 657,000 rides) and the lowest in December 2022 (approx. 169,000 rides). This fluctuation in ride counts throughout the year seems to be influenced by seasonal factors, with usage peaking in summer and decreasing in winter.
+### Ride Length Analysis: 
+The data pointed to the highest number of rides in July 2022 (approx. 657,000 rides) and the lowest in December 2022 (approx. 169,000 rides). This fluctuation in ride counts throughout the year seems to be influenced by seasonal factors, with usage peaking in summer and decreasing in winter.
 
 These findings provide valuable insights into how different types of users utilize the bike service and how usage patterns change over time. Such understanding can be leveraged to better manage the bike fleet and align service provision with user needs.
 
