@@ -95,66 +95,67 @@ all_trips$end_time <- ymd_hms(all_trips$end_time)
 Data Inspection <a name="data-inspection"></a>
 The new table is inspected to understand the structure, variables, and initial statistics.
 
-# List of column names
+List of column names
+```r
 colnames(all_trips)
+```
 
-# Number of rows in data frame
+
+Number of rows in data frame
+```r
 nrow(all_trips)
+```
 
-# Dimensions of the data frame
+Dimensions of the data frame
+```r
 dim(all_trips)
+```
 
-# Display the first 6 rows of data frame
+Display the first 6 rows of data frame
+```r
 head(all_trips)
+```
 
-# Statistical summary of data (mainly for numerical variables)
+Statistical summary of data (mainly for numerical variables)
+```r
 summary(all_trips)
+```
 
+## Further Data Cleaning <a name="further-data-cleaning"></a>
 
-Adding the ride length column
+The script calculates ride length and converts it from a factor to numeric. Furthermore, it removes unlikely ride lengths (e.g., negative values or excessively long rides).
 
-    all_trips$ride_length <- difftime(all_trips$end_time,all_trips$start_time)
+```r
+# Adding the ride length column
+all_trips$ride_length <- difftime(all_trips$end_time,all_trips$start_time)
 
-Convert “ride\_length” from Factor to numeric so we can run calculations
-on the data
+# Converting "ride_length" from Factor to numeric
+all_trips$ride_length <- as.numeric(as.character(all_trips$ride_length))
 
-    is.factor(all_trips$ride_length)
-
-    ## [1] FALSE
-
-    all_trips$ride_length <- as.numeric(as.character(all_trips$ride_length))
-    is.numeric(all_trips$ride_length)
-
-    ## [1] TRUE
-
-Removing negative ride\_length values, creating a new version of the
-dataframe (v2) since data is being removed
-
-    all_trips_v2 <- all_trips[!(all_trips$ride_length < 0),]
-
-This script first removes rides that are either shorter than 1 minute or
-longer than 24 hours. Such durations are likely due to users forgetting
-to end their trips.
-
-    all_trips_v2 <- all_trips_v2 %>%
-      filter(ride_length >= 1 & ride_length <= 60 * 24)
-
-Afterwards, the script converts the ride length from minutes to hours.
-The result is rounded to two decimal places.
-
-    all_trips_v2$ride_length <- round(all_trips_v2$ride_length / 60, 2)
-
+# Removing negative ride_length values, creating a new version of the dataframe (v2) since data is being removed
+all_trips_v2 <- all_trips[!(all_trips$ride_length < 0),]
+```
+The script also accounts for unlikely ride durations, filtering out rides shorter than 1 minute or longer than 24 hours, as these durations may indicate that users forgot to end their trips.
+```r
+all_trips_v2 <- all_trips_v2 %>%
+  filter(ride_length >= 1 & ride_length <= 60 * 24)
+```
+Converting ride length from minutes to hours, rounding the result to two decimal places.
+```r
+all_trips_v2$ride_length <- round(all_trips_v2$ride_length / 60, 2)
+```
 ### Descriptive Analysis and Data Visualization::
 
-Ride Length Analysis
-
+#### Ride Length Analysis
+```r
     summary(all_trips_v2$ride_length)
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ##   0.020   5.050   8.430   9.543  13.280  24.000
+```
 
-Boxplot of ride length by user type:
-
+#### Visualization::
+```r
     ggplot(all_trips_v2, aes(x = usertype, y = ride_length, fill = usertype)) +
       geom_boxplot() +
       labs(
@@ -170,16 +171,15 @@ Boxplot of ride length by user type:
         axis.text = element_text(size = 10),
         plot.title = element_text(size = 14, face = "bold")
       )
-
+```
 ![Ride Length (hours) plot](Notebook_files/figure-markdown_strict/unnamed-chunk-15-1.png)
-
 The data presents an interesting distinction in ride durations between
 casual and member users. Casual users, on average, tend to enjoy longer
 rides, typically around 10 hours. They show a wide variance, with some
 rides extending from slightly over 5 hours to just below 15 hours.
 Conversely, member users generally prefer shorter rides. The following
 plot shows the average hourly usage in more details
-
+```r
     # Calculate the average ride length by user type
     avg_ride_length <- all_trips_v2 %>%
       group_by(usertype) %>%
@@ -202,13 +202,12 @@ plot shows the average hourly usage in more details
         axis.text = element_text(size = 10),
         plot.title = element_text(size = 14, face = "bold")
       )
-
+```
 ![](Notebook_files/figure-markdown_strict/unnamed-chunk-16-1.png)
-
 Determine the day and hour that reflect the highest usage in the Divvy
 bike data, you can analyze the data based on the number of rides by day
 of the week and hour of the day.
-
+```r
     # Calculate the number of rides by day of the week and hour of the day
     usage_by_day_hour <- all_trips_v2 %>%
       group_by(day_of_week, hour = hour(start_time)) %>%
@@ -238,19 +237,12 @@ of the week and hour of the day.
         axis.text = element_text(size = 10),
         plot.title = element_text(size = 14, face = "bold")
       )
-
-    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-    ## ℹ Please use `linewidth` instead.
-    ## This warning is displayed once every 8 hours.
-    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-    ## generated.
-
-![](Notebook_files/figure-markdown_strict/unnamed-chunk-17-1.png)
-
     #cat("Day with the highest usage:", max_usage$day_of_week, "\n")
     #cat("Hour with the highest usage:", max_usage$hour, "\n")
     # Day with the highest usage: Wednesday 
     # Hour with the highest usage: 5  pm
+```
+![](Notebook_files/figure-markdown_strict/unnamed-chunk-17-1.png)  
 
 This plot provides an overview of the bike usage patterns throughout the
 week, segmented by the hour of the day. The lines for each day represent
@@ -274,32 +266,31 @@ specific days where the usage at 5 pm is particularly high. This
 information could be used to manage the bike fleet more effectively and
 ensure high availability during peak usage times.
 
+```r
     library(scales)
+```
 
-    ## 
-    ## Attaching package: 'scales'
-
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     discard
-
-    ## The following object is masked from 'package:readr':
-    ## 
-    ##     col_factor
-
-    # Define a vector of month names
+   Define a vector of month names
+   ```r
     month_names <- c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
-
+   ```
+  Ride counts by month and user type
+  ```r
     ride_count_by_month_user <- all_trips_v2 %>%
       drop_na(month, usertype) %>%
       group_by(month, usertype) %>%
       summarise(ride_count = n(), .groups = "drop")
-
-    # Convert month from numeric to factor with specified levels and labels
+  ```
+  Convert month from numeric to factor with specified levels and labels
+  ```r
     ride_count_by_month_user$month <- factor(ride_count_by_month_user$month, levels = 1:12, labels = month_names)
-    # Convert ride count to thousands
+  ```
+  Convert ride count to thousands
+  ```r
     ride_count_by_month_user$ride_count <- ride_count_by_month_user$ride_count / 1000
-
+  ```
+  Plotting:
+  ```r
     ggplot(ride_count_by_month_user, aes(x = month, y = ride_count, fill = usertype)) +
       geom_bar(stat = "identity", position = "dodge") +
       labs(
@@ -319,9 +310,8 @@ ensure high availability during peak usage times.
         axis.text = element_text(size = 10),
         plot.title = element_text(size = 14, face = "bold")
       )
-
+ ```
 ![](Notebook_files/figure-markdown_strict/ride_count_by_month_user-1.png)
-
 The bar chart presents the ride count per month, divided by user type,
 for both casual and member riders. The ride count is plotted on the
 y-axis, while the x-axis represents each month of the year. This data
@@ -334,8 +324,9 @@ year. For both user types, ride counts tend to increase from January to
 July, peak in the summer months (June, July, and August), and then
 gradually decrease towards the end of the year. Ride Length Analysis
 
-Calculate the ride count by date
 
+Calculate the ride count by date
+```r
     # Calculate the ride count by month and year
     ride_count_by_month_year <- all_trips_v2 %>%
       drop_na(date) %>%
@@ -343,23 +334,29 @@ Calculate the ride count by date
       group_by(year_month) %>%
       summarise(ride_count = n()) %>%
       ungroup()
-
-    # Convert ride count to thousands
+```
+Convert ride count to thousands
+```r
     ride_count_by_month_year$ride_count <- ride_count_by_month_year$ride_count / 1000
+```
 
-    # Find the highest and lowest ride count
+Find the highest and lowest ride count
+```r
     max_ride_count <- max(ride_count_by_month_year$ride_count)
     min_ride_count <- min(ride_count_by_month_year$ride_count)
+```
 
-    # Find the month/year with the highest and lowest ride count
+Find the month/year with the highest and lowest ride count
+```r
     highest_month_year <- ride_count_by_month_year %>%
       filter(ride_count == max_ride_count) %>%
       pull(year_month)
     lowest_month_year <- ride_count_by_month_year %>%
       filter(ride_count == min_ride_count) %>%
       pull(year_month)
-
-    # Print the highest and lowest ride month/year
+```
+Print the highest and lowest ride month/year
+```r
     cat("Highest bike ride month/year: ", highest_month_year, "\n")
 
     ## Highest bike ride month/year:  2022-07
@@ -367,8 +364,9 @@ Calculate the ride count by date
     cat("Lowest bike ride month/year: ", lowest_month_year, "\n")
 
     ## Lowest bike ride month/year:  2022-12
-
-    # Create a line plot with smoothed line and filled points
+```
+A line plot with smoothed line and filled points:
+```r
     ggplot(data = ride_count_by_month_year, aes(x = year_month, y = ride_count, group = 1)) +
       
       geom_point(aes(fill = year_month), size = 3, shape = 21, color = "black") +
@@ -388,9 +386,8 @@ Calculate the ride count by date
         axis.text = element_text(size = 10),
         plot.title = element_text(size = 14, face = "bold")
       )
-
+```
 ![](Notebook_files/figure-markdown_strict/unnamed-chunk-18-1.png)
-
 The data indicates that in May 2022, there were approximately 502,000
 rides, while in July 2022, the count rose to about 657,000 rides, which
 was the highest throughout the observed period. On the contrary, the
@@ -409,4 +406,7 @@ counts over the year. For example, the count tends to peak in summer
 (July) and drop in winter (December). These trends can be useful for
 understanding the seasonality of bike usage and planning accordingly.
 
-    # write.csv(all_trips_v2, file = '~/github.io/data/cleaned_data.csv')
+Saving the cleaned dat into a CSV file:
+```r
+# write.csv(all_trips_v2, file = '~/github.io/data/cleaned_data.csv')
+```
