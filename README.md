@@ -1,5 +1,5 @@
 # Google Analytics Capstone Project
-![image](https://github.com/Mbareck21/google_data_analyst_capstone_2023/assets/93048977/ea509297-4430-4e22-a33e-caffa3b731d9)
+![image]([https://github.com/Mbareck21/google_data_analyst_capstone_2023/assets/93048977/ea509297-4430-4e22-a33e-caffa3b731d9](https://coursera.org/share/cfc7a54e247a60ab1a498162ade8848a))
 
 Welcome to my capstone project for the Google Analytics Certification training I completed in May 2023. Over the course of three months, I honed my skills in SQL, Excel, and R. Ultimately, I chose R for this project due to its excellent capabilities for data analysis and visualization.
 
