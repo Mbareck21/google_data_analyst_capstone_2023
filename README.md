@@ -10,7 +10,7 @@ Welcome to my capstone project for the Google Analytics Certification training I
 3. [Data Cleaning](#data-cleaning)
 4. [Descriptive Analysis](#descriptive-analysis)
 5. [Data Visualization](#data-visualization)
-6. [Analysis](#Analysis Summary)
+6. [Analysis](#Analysis-summary)
 
 ## Data Collection and Preparation <a name="data-collection-and-preparation"></a>
 
