@@ -30,7 +30,7 @@ The script executes descriptive analysis on the `ride_length` column, summarizin
 
 ## Data Visualization <a name="data-visualization"></a>
 
-The script employs `ggplot2` to design bar charts representing the number of rides and average ride duration by rider type and weekday.
+The script employs `ggplot2` to design charts representing the number of rides and average ride duration by rider type and weekday.
 
 ## Analysis Summary <a name="analysis-summary"></a>
 
